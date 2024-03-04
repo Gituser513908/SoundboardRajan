@@ -23,31 +23,37 @@ export default function Page() {
     const navigation = useNavigation(); // to navigate to page2
 
     // array of sounds for pre loading buttons
-    const soundList = [
-        require('../assets/A1.mp3'),
+    const audioList = [
         require('../assets/A2.mp3'),
         require('../assets/A3.mp3'),
         require('../assets/A4.mp3'),
         require('../assets/A5.mp3'),
-        require('../assets/A5.mp3'),
+       
     ]
 
     //load a sound into the PBO 
     const loadSound = async (soundNumber) => {
 
-     
+        let audio = audioList[soundNumber];
         try {
+
            
-           // const soundObj = new Audio.Sound()
-            
+            const soundObj = new Audio.Sound()
+           
            
 
-            const { sound } = await Audio.Sound.createAsync(soundList[soundNumber]);
+            // const { sound } = await Audio.Sound.createAsync(audio);
+
+            await soundObj.loadAsync(audio)
           
-            setMyPBO(sound)
+            setMyPBO(soundObj)
 
             setPlaybackStatus("Loaded");
-           
+
+            if (playBackStatus === "Loaded") {
+
+                playPBO()
+            }
             console.log('loades',soundNumber);
         } catch (error) {
             console.log(error);
@@ -55,23 +61,21 @@ export default function Page() {
     }
 
     //play a pbo
-  const playPBO = async () => {
+    const playPBO = async () => {
+
       try {
-          if (myPBO && playBackStatus === "Loaded") {
-              await myPBO.playAsync();
+          
+
+               myPBO.playAsync();
 
               setPlaybackStatus("Playing")
-          }
+         
        } catch (e) {
             console.log(e);
         }
     }
 
-    //stop a pbo
-    const stopPBO = async () => {
-        setPlaybackStatus("Stopped");
-        await myPBO.stopAsync();// but then we should "rewind" it
-    }
+   
 
 
         //unload a pbo
@@ -86,9 +90,10 @@ export default function Page() {
 
         //load sound on startup and unload when we leave
 
-        useEffect(() => {
+    useEffect(() => {
+
             loadSound(); //no await is fine in useEffect for Hook reasons
-            return () => unloadPBO();
+            
            
         }, [myPBO])
 
@@ -125,10 +130,10 @@ export default function Page() {
                 <Pressable
                     style={[Styles.soundbutton, Styles.sb1,]}
 
-                    onPress={async() => {
+                    onPress={ () => {
                      
-                        await loadSound(0);
-                       await  playPBO();
+                          loadSound(0);
+                        // playPBO();
                         
 
                     }}
@@ -138,19 +143,19 @@ export default function Page() {
 
                  <Pressable
                  
-                    onPress={async () => {
+                    onPress={ () => {
                        
-                       await loadSound(1);
-                        await playPBO();
+                        loadSound(1);
+                         //playPBO();
                     }}
                     style={[Styles.soundbutton,Styles.sb2,]}>
                  </Pressable>
 
                 <Pressable
 
-                    onPress={async () => {
-                       await loadSound(2);
-                       await playPBO();
+                    onPress={() => {
+                        loadSound(2);
+                       // playPBO();
                     }}
                     style={[Styles.soundbutton,Styles.sb3,]}>
                    
@@ -159,9 +164,9 @@ export default function Page() {
       
                 <Pressable
 
-                    onPress={async () => {
-                       await loadSound(3);
-                        await playPBO();
+                    onPress={ () => {
+                      loadSound(3);
+                       // playPBO();
                     }}
                  
                     style={[Styles.soundbutton,Styles.sb4,]}>
@@ -170,29 +175,10 @@ export default function Page() {
                 </Pressable>
 
       
-        <Pressable
-
-                    onPress={async () => {
-                        await loadSound(4);
-                       await playPBO();
-                    }}
-                    style={[Styles.soundbutton,Styles.sb5,]}>
-                   
-                    
-                       
-                  
-                  
-
-        </Pressable>
+        
 
 
-        <Pressable
-                    onPress={async () => {
-                       await loadSound(5);
-                       await playPBO();
-                    }}
-                    style={[Styles.soundbutton,Styles.sb6,]}>
-           </Pressable>
+      
 
                        
          </View>
