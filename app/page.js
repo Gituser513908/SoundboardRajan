@@ -16,9 +16,17 @@ import Styles from '../styles/page-styles';
 
 export default function Page() {
 
-    const [myPBO, setMyPBO] = useState(null);
+    const [myPBO, setMyPBO] = useState(null);//hold my playnack object
 
-    const [playBackStatus, setPlaybackStatus] = useState("Unloaded");
+    const [playBackStatus, setPlaybackStatus] = useState("Unloaded");//status
+
+    const [audioChange, setAudioChange] = useState(null);//to keep track of audio
+
+    const [recordings, setRecordings] = useState([]); // the sound recording object
+    const [recordingsUri, setRecordingsUri] = useState([]);// the recorded file location
+    const [playback, setPlayback] = useState(null); // the playback object
+    const [permissionResponse, requestPermission] = Audio.usePermissions();// get microphone permission from useer
+
 
     const navigation = useNavigation(); // to navigate to page2
 
@@ -34,6 +42,8 @@ export default function Page() {
     //load a sound into the PBO 
     const loadSound = async (soundNumber) => {
 
+        setAudioChange(soundNumber);
+
         let audio = audioList[soundNumber];
         try {
 
@@ -41,6 +51,7 @@ export default function Page() {
             const soundObj = new Audio.Sound()
            
            
+            
 
             // const { sound } = await Audio.Sound.createAsync(audio);
 
@@ -50,10 +61,7 @@ export default function Page() {
 
             setPlaybackStatus("Loaded");
 
-            if (playBackStatus === "Loaded") {
-
-                playPBO()
-            }
+            playPBO();
             console.log('loades',soundNumber);
         } catch (error) {
             console.log(error);
@@ -64,7 +72,8 @@ export default function Page() {
     const playPBO = async () => {
 
       try {
-          
+
+         
 
                myPBO.playAsync();
 
@@ -75,27 +84,101 @@ export default function Page() {
         }
     }
 
-   
-
-
-        //unload a pbo
-
-        const unloadPBO = async () => {
+   //unload a pbo
+    const unloadPBO = async () => {
             
                 await myPBO.unloadAsync();
 
                 setPlaybackStatus("Unloaded");
             
+    }
+
+    //start recording
+    const startRecording = async () => {
+
+        try {
+            // make sure we have permission
+            if (permissionResponse.status !== 'granted') {
+                console.log("Requesting permissions");
+                await requestPermission();
+            }
+            console.log('Permission is', permissionResponse.status);
+
+            //set device specific values
+            await Audio.setAudioModeAsync({
+                allowsRecordingIOS: true,
+                playsInSilentMode: true,
+            })
+
+
+
+            const { recording } = await Audio.Recording.createAsync(
+                Audio.RecordingOptionsPresets.HIGH_QUALITY
+            );
+
+            setRecordings(lastrec => [...lastrec, recording]);
+
+           // setRecording(recording);
+            console.log("recording!");
+
+        } catch (error) {
+            console.log("Error during startRecording(): ", error);
         }
+
+
+    }
+
+    //stop recording
+    const stopRecording = async (index) => {
+        try {
+
+            const recording = recordings[index];// to stop recording at that index
+            await recording.stopAndUnloadAsync(); //actually stop
+            
+            const uri = recording.getURI();
+            setRecordingsUri(lasturi=>[...lasturi, uri]);// append to array of uri
+
+            setRecordings([]);
+
+            console.log("Recording stopped and stored at :", uri);
+        } catch (error) {
+            console.log("Eror during startRecording():", error);
+        }
+    }
+
+    //play recording
+    const playRecording = async (index) => {
+        const { sound } = await Audio.Sound.createAsync({
+            uri: recordingsUri[index]
+        });
+        setPlayback(sound);
+        await sound.replayAsync();
+        console.log('Playing recorded sound from', recordingsUri[index]);
+
+    }
+
+    //clear recording
+    const clearRecording = async () => {
+        setRecordingsUri([]);
+    }
 
         //load sound on startup and unload when we leave
 
     useEffect(() => {
-
+        
             loadSound(); //no await is fine in useEffect for Hook reasons
-            
+      
            
-        }, [myPBO])
+    }, [audioChange])
+
+    // This effect hook will make sure the app stops recording when it ends
+    useEffect(() => {
+        return () => {
+            recordings.forEach(async recording => {
+                await recording.stopAndUnloadAsync();
+            });
+        };
+    }, []);
 
     return (
 
@@ -133,7 +216,7 @@ export default function Page() {
                     onPress={ () => {
                      
                           loadSound(0);
-                        // playPBO();
+                         //playPBO();
                         
 
                     }}
@@ -146,7 +229,7 @@ export default function Page() {
                     onPress={ () => {
                        
                         loadSound(1);
-                         //playPBO();
+                        // playPBO();
                     }}
                     style={[Styles.soundbutton,Styles.sb2,]}>
                  </Pressable>
@@ -155,7 +238,7 @@ export default function Page() {
 
                     onPress={() => {
                         loadSound(2);
-                       // playPBO();
+                      // playPBO();
                     }}
                     style={[Styles.soundbutton,Styles.sb3,]}>
                    
@@ -166,7 +249,7 @@ export default function Page() {
 
                     onPress={ () => {
                       loadSound(3);
-                       // playPBO();
+                      // playPBO();
                     }}
                  
                     style={[Styles.soundbutton,Styles.sb4,]}>
@@ -175,7 +258,58 @@ export default function Page() {
                 </Pressable>
 
       
-        
+                <View>
+
+                    <Button
+                        title={recordings[0] ? 'Stop Recording' : 'Start Recording'}
+                        onPress={()=>(recordings[0] ? stopRecording(0) : startRecording())}
+                    />
+                   
+                    {
+                        recordingsUri[0] &&
+                        <Button
+                            title="Play 1"
+                            onPress={() => playRecording(0)}
+                        />
+                    }
+                   
+
+
+                    <Button
+                        title={recordings[1] ? 'Stop Recording' : 'Start Recording'}
+                        onPress={()=>(recordings[1] ? stopRecording(1) : startRecording())}
+                    />
+
+                  
+                    {
+                        recordingsUri[1] &&
+                        <Button
+                            title="Play 2"
+                            onPress={() => playRecording(1)}
+                        />
+                    }
+
+                    <Button
+                        title={recordings[2] ? 'Stop Recording' : 'Start Recording'}
+                        onPress={()=>(recordings[2] ? stopRecording(2) : startRecording())}
+                    />
+
+                   
+                    {
+                        recordingsUri[2] &&
+                        <Button
+                            title="Play 3"
+                            onPress={() => playRecording(2) }
+                        />
+                    }
+
+
+                    <Button
+                        title={recordingsUri.length > 0 ? 'Clear Recording' : ''}
+                        onPress={clearRecording}
+                    />
+
+                </View>
 
 
       

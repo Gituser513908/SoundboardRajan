@@ -11,9 +11,9 @@
  * 
  * Stephen Graham's in class examples,
  * 
+ * Record and play audio in expo react native by Code Entropy on youtube 
  * 
- * 
- * 
+ * Learn to Add sound in React native app by The Web Dev on youtube
  * 
  * 
  */
@@ -37,7 +37,7 @@ return (
 
         
 
-        <Text style={Styles.header}> Assignment 2 </Text>
+        <Text style={Styles.header}> Assignment 3</Text>
 
 
         <Text style={Styles.textW}> Welcome to Wach a Molee</Text>
