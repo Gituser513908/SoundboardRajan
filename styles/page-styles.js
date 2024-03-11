@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
        left:-110,
         width: 100,
         height: 100,
+       
         
     },
     sb2: {
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
        
         width: 100,
         height: 100,
-
+       
     },
     sb3: {
 
@@ -101,33 +102,23 @@ const styles = StyleSheet.create({
        left:110,
         width: 100,
         height: 100,
-    },
-    sb4: {
-        
-        top: 110,
-       left:-110,
-        
-        width: 100,
-        height: 100,
-    },
-    sb5: {
-        top:10,
-        left:0,
-        width: 100,
-        height: 100,
-
-    },
-    sb6: {
        
-        top: -90,
-       left:110,
-        
-        width: 100,
+    },
+
+    headText: {
+        fontSize: 20,
+        marginBottom: 10,
+    },
+
+    startStop: {
+        marginBottom: 20,
         height: 100,
 
     },
    
-
+    play: {
+        marginBottom: 10,
+    },
    
 
     backButton: {

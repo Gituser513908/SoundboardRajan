@@ -17,12 +17,9 @@ import Styles from '../styles/page-styles';
 export default function Page() {
 
     const [myPBO, setMyPBO] = useState(null);//hold my playnack object
-
     const [playBackStatus, setPlaybackStatus] = useState("Unloaded");//status
-
     const [audioChange, setAudioChange] = useState(null);//to keep track of audio
-
-    const [recordings, setRecordings] = useState([]); // the sound recording object
+    const [recordings, setRecordings] = useState([]); // the sound recordings array
     const [recordingsUri, setRecordingsUri] = useState([]);// the recorded file location
     const [playback, setPlayback] = useState(null); // the playback object
     const [permissionResponse, requestPermission] = Audio.usePermissions();// get microphone permission from useer
@@ -35,7 +32,7 @@ export default function Page() {
         require('../assets/A2.mp3'),
         require('../assets/A3.mp3'),
         require('../assets/A4.mp3'),
-        require('../assets/A5.mp3'),
+       
        
     ]
 
@@ -86,7 +83,7 @@ export default function Page() {
 
    //unload a pbo
     const unloadPBO = async () => {
-            
+            if (myPBO)
                 await myPBO.unloadAsync();
 
                 setPlaybackStatus("Unloaded");
@@ -162,14 +159,9 @@ export default function Page() {
         setRecordingsUri([]);
     }
 
-        //load sound on startup and unload when we leave
-
-    useEffect(() => {
         
-            loadSound(); //no await is fine in useEffect for Hook reasons
-      
-           
-    }, [audioChange])
+
+   
 
     // This effect hook will make sure the app stops recording when it ends
     useEffect(() => {
@@ -211,7 +203,7 @@ export default function Page() {
 
                 
                 <Pressable
-                    style={[Styles.soundbutton, Styles.sb1,]}
+                    style={[Styles.soundbutton, Styles.sb1, { backgroundColor: 'lightblue' } ]}
 
                     onPress={ () => {
                      
@@ -229,9 +221,10 @@ export default function Page() {
                     onPress={ () => {
                        
                         loadSound(1);
+                        
                         // playPBO();
                     }}
-                    style={[Styles.soundbutton,Styles.sb2,]}>
+                    style={[Styles.soundbutton, Styles.sb2, { backgroundColor: 'lightgreen', }]}>
                  </Pressable>
 
                 <Pressable
@@ -240,66 +233,63 @@ export default function Page() {
                         loadSound(2);
                       // playPBO();
                     }}
-                    style={[Styles.soundbutton,Styles.sb3,]}>
+                    style={[Styles.soundbutton, Styles.sb3, { backgroundColor: 'lightyellow', }]}>
                    
                 </Pressable>
 
       
-                <Pressable
-
-                    onPress={ () => {
-                      loadSound(3);
-                      // playPBO();
-                    }}
-                 
-                    style={[Styles.soundbutton,Styles.sb4,]}>
+              
+            </View>
                     
-                        
-                </Pressable>
+                <View style={{top:-60 }}>
 
-      
-                <View>
+                    <Text style={Styles.headText }>Record and play up to 4 recording</Text>
 
-                    <Button
-                        title={recordings[0] ? 'Stop Recording' : 'Start Recording'}
-                        onPress={()=>(recordings[0] ? stopRecording(0) : startRecording())}
+                <Button
+                    style={Styles.startStop}
+                    title={recordings[0] ? 'Stop Recording' : 'Start Recording'}
+                    onPress={() => (recordings[0] ? stopRecording(0) : startRecording())}
+                   
                     />
+
+              
                    
                     {
                         recordingsUri[0] &&
                         <Button
-                            title="Play 1"
-                            onPress={() => playRecording(0)}
+                        title="Play 1"
+                        onPress={() => playRecording(0)}
+                        style={Styles.play }
                         />
                     }
                    
-
-
-                    <Button
-                        title={recordings[1] ? 'Stop Recording' : 'Start Recording'}
-                        onPress={()=>(recordings[1] ? stopRecording(1) : startRecording())}
-                    />
 
                   
                     {
                         recordingsUri[1] &&
                         <Button
-                            title="Play 2"
-                            onPress={() => playRecording(1)}
+                        title="Play 2"
+                        onPress={() => playRecording(1)}
+                        style={Styles.play}
+
                         />
-                    }
-
-                    <Button
-                        title={recordings[2] ? 'Stop Recording' : 'Start Recording'}
-                        onPress={()=>(recordings[2] ? stopRecording(2) : startRecording())}
-                    />
-
+                    }       
                    
                     {
                         recordingsUri[2] &&
                         <Button
-                            title="Play 3"
-                            onPress={() => playRecording(2) }
+                        title="Play 3"
+                        onPress={() => playRecording(2)}
+                        style={Styles.play}
+                        />
+                    }
+
+                    {
+                        recordingsUri[3] &&
+                        <Button
+                        title="Play 4"
+                        onPress={() => playRecording(3)}
+                        style={Styles.play}
                         />
                     }
 
@@ -319,11 +309,7 @@ export default function Page() {
 
 
 
-           
-
-            
-
-        </View>
+          
         
     );
 }

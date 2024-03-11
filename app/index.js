@@ -40,23 +40,23 @@ return (
         <Text style={Styles.header}> Assignment 3</Text>
 
 
-        <Text style={Styles.textW}> Welcome to Wach a Molee</Text>
+        <Text style={Styles.textW}> Welcome to my Soundboard</Text>
 
         <Text style={Styles.text1}> How to play</Text>
 
-        <Text style={Styles.text2}> Click Start Game to play game</Text>
+        <Text style={Styles.text2}> Click Sound to start</Text>
 
-        <Text style={Styles.text2}> You get 60 sec to play, 3 lives,</Text>
+        <Text style={Styles.text2}> 3 buttons on top play pre programmed sound</Text>
 
-        <Text style={Styles.text2}> Try to get a higer score</Text>
+        <Text style={Styles.text2}> You can also Record you own sound </Text>
 
-        <Text style={Styles.text2}> You miss a mole you lose a life</Text>
+        <Text style={Styles.text2}>Give your permission to use microphone  </Text>
 
-        <Text style={Styles.text2}> Game Ends when you lose all lives or </Text>
+        <Text style={Styles.text2}> Click Start Recording to record your sound </Text>
 
-        <Text style={Styles.text2}>  timer runs out</Text>
+        <Text style={Styles.text2}> record Upto 4 recordings</Text>
 
-        <Text style={Styles.text2}>Don't worry you can restart !!</Text>
+        <Text style={Styles.text2}>Click clear to erase your recordings</Text>
 
         <Text style={Styles.text2}>ENJOY</Text>
 
@@ -77,7 +77,7 @@ return (
 
                 <Pressable>
                     
-                    <Text style={{ fontSize: 20 } }>Start Game</Text> 
+                    <Text style={{ fontSize: 20 } }>Sounds</Text> 
                 </Pressable>
 
             </Link>
