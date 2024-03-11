@@ -8,6 +8,8 @@ import { Link, useNavigation, useLocalSearchParams, } from 'expo-router';
 import { Audio } from 'expo-av';
 import Styles from '../styles/page-styles';
 
+have audio files in assets whic i used in an array. audio files: a2,a3,a4
+
 BUGS:
 When you press first any preprogrammed button it wont play but second press it works. something to do with loading of them and 
 also sometimes previous sounds play even if you press the other button. my unload function maye be not be implemented properly.
